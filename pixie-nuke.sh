@@ -2,6 +2,7 @@
 
 OVERRIDE_NAMESPACE=$1
 NAMESPACES="pl newrelic olm px-operator"
+CRDS="https://download.newrelic.com/install/kubernetes/pixie/latest/px.dev_viziers.yaml https://download.newrelic.com/install/kubernetes/pixie/latest/olm_crd.yaml"
 
 if [[ $OVERRIDE_NAMESPACE != "" ]]; then
     NAMESPACES="$OVERRIDE_NAMESPACE pl olm px-operator"
@@ -18,8 +19,8 @@ do
 
     if [[ $ANSWER =~ (Y|y) ]]; then
         echo -e "Deleting $i namespace. This may take a few minutes...\n"
-        echo -e "kubectl delete ns $i\n\n"
-        #kubectl delete ns $i
+        #echo -e "kubectl delete ns $i\n\n"
+        kubectl delete ns $i
     else
         echo -e "Skipping $i namespace.\n"
     fi
@@ -28,12 +29,20 @@ done
 echo -e "Deleting clusterroles and clusterrolebindings...\n"
 for i in $(kubectl get clusterrole | egrep 'viziers.px.dev|pixie-operator|newrelic-bundle|olm-operators|global-operators' | awk '{print $1}')
 do
-    echo "kubectl delete clusterrole $i"
+    #echo "kubectl delete clusterrole $i"
+    kubectl delete clusterrole $i
 done
 
 for i in $(kubectl get clusterrolebinding | egrep 'viziers.px.dev|pixie-operator|newrelic-bundle|olm-operators|global-operators' | awk '{print $1}')
 do
-    echo "kubectl delete clusterrolebinding $i"
+    #echo "kubectl delete clusterrolebinding $i"
+    kubectl delete clusterrolebinding $i
+done
+
+echo "Deleting Pixie CRDs..."
+for i in $CRDS
+do
+    kubectl delete -f $i
 done
 
 exit 0
