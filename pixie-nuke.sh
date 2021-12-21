@@ -1,4 +1,12 @@
 #!/bin/bash
+#
+#
+# Description: A simple bash script to cleanup a Pixie and New Relic installation in a Kubernetes cluster.
+#      Author: Brad Schmitt
+#        Date: 12/21/21
+#
+#
+#
 
 OVERRIDE_NAMESPACE=$1
 NAMESPACES="pl newrelic olm px-operator"
@@ -11,7 +19,7 @@ fi
 for i in $NAMESPACES
 do
     if [[ $i == "olm" ]]; then
-        echo -e "BE CAREFUL - The olm namespace is used by other components in an OpenShift cluster."
+        echo -e "CAUTION: IF THIS IS OPENSHIFT, DO NOT DELETE THE OLM NAMESPACE."
     fi
 
     echo -e "Do you want to delete the $i namespace? (Y/N): "
